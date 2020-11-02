@@ -22,4 +22,8 @@ class Oystercard
     @in_or_out += 1
   end
 
+  def touch_out
+    @in_or_out -= 1
+  end
+
 end
