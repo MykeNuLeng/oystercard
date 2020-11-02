@@ -19,16 +19,20 @@ class Oystercard
   end
 
   def touch_in
+    raise "You didn't touch out, shame on you!" if @in_or_out == 1
+
     @in_or_out += 1
   end
 
   def touch_out
+    raise "You didn't touch in, shame on you!" if @in_or_out == 0
+    
     @in_or_out -= 1
   end
 
   def in_journey?
     return true if @in_or_out == 1
-    
+
     return false
   end
 
