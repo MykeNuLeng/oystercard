@@ -46,4 +46,17 @@ describe Oystercard do
     expect(subject.touch_out).to eq 0
   end
 
+  it 'responds to in_journey?' do
+    expect(subject).to respond_to :in_journey?
+  end
+
+  it "it lets you know if you're on a journey" do
+    subject.touch_in
+    expect(subject.in_journey?).to eq true
+  end
+
+  it "it lets you know when you're not on a journey" do
+    expect(subject.in_journey?).to eq false
+  end
+
 end

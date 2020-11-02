@@ -26,4 +26,10 @@ class Oystercard
     @in_or_out -= 1
   end
 
+  def in_journey?
+    return true if @in_or_out == 1
+    
+    return false
+  end
+
 end
