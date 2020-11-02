@@ -11,6 +11,11 @@ describe Oystercard do
   end
 
   it 'top_up method adds to balance' do
-    expect(subject.top_up(100)).to eq 100
+    expect(subject.top_up(10)).to eq 10
+  end
+
+  it 'raises an error when balance goes above 90' do
+    subject.top_up(90)
+    expect { subject.top_up(1) }.to raise_error("You're clearly too rich!")
   end
 end
