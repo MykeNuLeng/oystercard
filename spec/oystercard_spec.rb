@@ -16,6 +16,7 @@ describe Oystercard do
 
   it 'raises an error when balance goes above 90' do
     subject.top_up(90)
-    expect { subject.top_up(1) }.to raise_error("You're clearly too rich!")
+    error_message = "You're clearly too rich! #{subject.MAXIMUM_BALANCE} is the limmit"
+    expect { subject.top_up(1) }.to raise_error(error_message)
   end
 end
