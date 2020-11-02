@@ -34,6 +34,7 @@ describe Oystercard do
   end
 
   it 'touching in causes in_or_out to increase by 1' do
+    subject.top_up(3)
     expect(subject.touch_in).to eq 1
   end
 
@@ -42,6 +43,7 @@ describe Oystercard do
   end
 
   it 'touching out causes in_or_out to decrease by 1' do
+    subject.top_up(30)
     subject.touch_in
     expect(subject.touch_out).to eq 0
   end
@@ -51,12 +53,18 @@ describe Oystercard do
   end
 
   it "it lets you know if you're on a journey" do
+    subject.top_up(30)
     subject.touch_in
     expect(subject.in_journey?).to eq true
   end
 
   it "it lets you know when you're not on a journey" do
     expect(subject.in_journey?).to eq false
+  end
+
+  it "raises an error when you don't have enough balance" do
+    error = "You don't have enough balance for a journey"
+    expect { subject.touch_in }.to raise_error(error)
   end
 
 end
