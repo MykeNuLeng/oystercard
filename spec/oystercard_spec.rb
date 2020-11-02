@@ -29,4 +29,12 @@ describe Oystercard do
     expect(oystercard.deduct(20)).to eq 60
   end
 
+  it 'responds to touch_in' do
+    expect(subject).to respond_to :touch_in
+  end
+
+  it 'touching in causes travel array to have an item' do
+    expect(subject.touch_in).to eq 1
+  end 
+
 end
