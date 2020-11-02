@@ -19,4 +19,14 @@ describe Oystercard do
     error_message = "You're clearly too rich! #{subject.MAXIMUM_BALANCE} is the limmit"
     expect { subject.top_up(1) }.to raise_error(error_message)
   end
+
+  it 'responds to deduct' do
+    expect(subject).to respond_to :deduct
+  end
+
+  it 'deducts far from balance' do
+    oystercard = Oystercard.new(80)
+    expect(oystercard.deduct(20)).to eq 60
+  end
+
 end
