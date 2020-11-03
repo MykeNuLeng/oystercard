@@ -20,20 +20,12 @@ describe Oystercard do
     expect { subject.top_up(1) }.to raise_error(error_message)
   end
 
-  it 'responds to deduct' do
-    expect(subject).to respond_to :deduct
-  end
-
-  it 'deducts far from balance' do
-    oystercard = Oystercard.new(80)
-    expect(oystercard.deduct(20)).to eq 60
-  end
-
   it 'responds to touch_in' do
     expect(subject).to respond_to :touch_in
   end
 
   it 'touching in causes in_or_out to increase by 1' do
+    subject.top_up(Oystercard::MINIMUM_BALANCE)
     expect(subject.touch_in).to eq 1
   end
 
@@ -42,6 +34,7 @@ describe Oystercard do
   end
 
   it 'touching out causes in_or_out to decrease by 1' do
+    subject.top_up(Oystercard::MINIMUM_BALANCE)
     subject.touch_in
     expect(subject.touch_out).to eq 0
   end
@@ -51,6 +44,7 @@ describe Oystercard do
   end
 
   it "it lets you know if you're on a journey" do
+    subject.top_up(Oystercard::MINIMUM_BALANCE)
     subject.touch_in
     expect(subject.in_journey?).to eq true
   end
@@ -59,4 +53,14 @@ describe Oystercard do
     expect(subject.in_journey?).to eq false
   end
 
+  it 'it raises an error if there is not enough money' do
+    subject.top_up(Oystercard::MINIMUM_BALANCE - 0.01)
+    expect { subject.touch_in }.to raise_error("You don't have enough money")
+  end
+
+  it 'touching out reduces balance by minimum fare' do
+    subject.top_up(Oystercard::MINIMUM_BALANCE)
+    subject.touch_in
+    expect { subject.touch_out }.to change { subject.balance }.by(-Oystercard::MINIMUM_BALANCE)
+  end
 end
