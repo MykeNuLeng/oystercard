@@ -2,6 +2,7 @@ class Oystercard
 
   MINIMUM_BALANCE = 1
 
+
   def initialize(default_balance = 0, max = 90)
     @balance = default_balance
     @MAXIMUM_BALANCE = max
@@ -9,7 +10,7 @@ class Oystercard
 
   end
 
-  attr_reader :balance, :MAXIMUM_BALANCE
+  attr_reader :balance, :MINIMUM_BALANCE, :MAXIMUM_BALANCE
 
   def top_up(value)
     raise "You're clearly too rich! #{@MAXIMUM_BALANCE} is the limmit" if @balance + value > @MAXIMUM_BALANCE
@@ -29,6 +30,7 @@ class Oystercard
     raise "You didn't touch in, shame on you!" if @in_or_out == 0
 
     deduct(MINIMUM_BALANCE)
+
     @in_or_out -= 1
   end
 

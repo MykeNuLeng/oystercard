@@ -26,6 +26,7 @@ describe Oystercard do
 
   it 'touching in causes in_or_out to increase by 1' do
     subject.top_up(Oystercard::MINIMUM_BALANCE)
+    subject.top_up(3)
     expect(subject.touch_in).to eq 1
   end
 
@@ -63,4 +64,5 @@ describe Oystercard do
     subject.touch_in
     expect { subject.touch_out }.to change { subject.balance }.by(-Oystercard::MINIMUM_BALANCE)
   end
+  
 end
