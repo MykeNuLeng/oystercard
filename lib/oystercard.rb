@@ -6,36 +6,34 @@ class Oystercard
   def initialize(default_balance = 0, max = 90)
     @balance = default_balance
     @MAXIMUM_BALANCE = max
-    @in_or_out = 0
-
   end
 
-  attr_reader :balance, :MINIMUM_BALANCE, :MAXIMUM_BALANCE
+  attr_reader :balance, :MAXIMUM_BALANCE, :entry_station
 
   def top_up(value)
-    raise "You're clearly too rich! #{@MAXIMUM_BALANCE} is the limmit" if @balance + value > @MAXIMUM_BALANCE
+    error = "You're clearly too rich! #{@MAXIMUM_BALANCE} is the limmit"
+    raise error if @balance + value > @MAXIMUM_BALANCE
 
     @balance += value
   end
 
-  def touch_in
+  def touch_in(station)
     raise "You don't have enough money" if @balance < MINIMUM_BALANCE
 
-    raise "You didn't touch out, shame on you!" if @in_or_out == 1
+    raise "You didn't touch out, shame on you!" if in_journey?
 
-    @in_or_out += 1
+    @entry_station = station
   end
 
   def touch_out
-    raise "You didn't touch in, shame on you!" if @in_or_out == 0
+    raise "You didn't touch in, shame on you!" if !in_journey?
 
     deduct(MINIMUM_BALANCE)
-
-    @in_or_out -= 1
+    @entry_station = nil
   end
 
   def in_journey?
-   @in_or_out == 1
+   @entry_station != nil
   end
 
   private
