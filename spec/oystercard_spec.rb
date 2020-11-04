@@ -30,10 +30,10 @@ describe Oystercard do
     expect(subject).to respond_to :touch_out
   end
 
-  it 'touching out causes removes entry_station' do
+  it 'touching out removes entry_station' do
     subject.top_up(Oystercard::MINIMUM_BALANCE)
     subject.touch_in(station)
-    expect(subject.touch_out).to eq nil
+    expect(subject.touch_out(station)).to eq nil
   end
 
   it 'responds to in_journey?' do
@@ -58,13 +58,18 @@ describe Oystercard do
   it 'touching out reduces balance by minimum fare' do
     subject.top_up(Oystercard::MINIMUM_BALANCE)
     subject.touch_in(station)
-    expect { subject.touch_out }.to change { subject.balance }.by(-Oystercard::MINIMUM_BALANCE)
+    expect { subject.touch_out(station) }.to change { subject.balance }.by(-Oystercard::MINIMUM_BALANCE)
   end
 
-  it 'stores the entry station' do
+  it 'stores a complete journey in a hash' do
     subject.top_up(Oystercard::MINIMUM_BALANCE)
     subject.touch_in(station)
-    expect(subject.entry_station).to eq station
+    subject.touch_out(station)
+    hash = {:entry_station => station, :exit_station => station}
+    expect(subject.travel_history).to include(hash)
   end
 
+  it 'by default the travel history is empty' do
+    expect(subject.travel_history).to be_empty
+  end
 end
