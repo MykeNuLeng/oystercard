@@ -61,12 +61,10 @@ describe Oystercard do
     expect { subject.touch_out(station) }.to change { subject.balance }.by(-Oystercard::MINIMUM_BALANCE)
   end
 
-  it 'stores a complete journey in a hash' do
+  it 'a complete journey is stored in @travel_history' do
     subject.top_up(Oystercard::MINIMUM_BALANCE)
     subject.touch_in(station)
-    subject.touch_out(station)
-    hash = {:entry_station => station, :exit_station => station}
-    expect(subject.travel_history).to include(hash)
+    expect { subject.touch_out(station) }.to change { subject.travel_history.length }.by 1
   end
 
   it 'by default the travel history is empty' do

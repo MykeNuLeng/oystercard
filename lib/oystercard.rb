@@ -22,18 +22,18 @@ class Oystercard
   end
 
   def touch_in(station)
+    end_journey if @journey
+
     raise "You don't have enough money" if @balance < MINIMUM_BALANCE
 
     @journey = Journey.new(station)
   end
 
   def touch_out(station)
-    deduct(@journey.finish(station).fare)
-    @travel_history << {
-      entry_station: @journey.entry_station,
-      exit_station: @journey.exit_station
-    }
-    @journey = nil
+    @journey = Journey.new(nil) unless @journey
+
+    @journey.finish(station)
+    end_journey
   end
 
   def in_journey?
@@ -41,6 +41,12 @@ class Oystercard
   end
 
   private
+
+  def end_journey
+    deduct(@journey.fare)
+    @travel_history << @journey
+    @journey = nil
+  end
 
   def deduct(fare)
     @balance -= fare
