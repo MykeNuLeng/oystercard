@@ -17,8 +17,7 @@ describe Oystercard do
 
   it 'raises an error when balance goes above 90' do
     subject.top_up(90)
-    error = "#{Oystercard::MAXIMUM_BALANCE} is the balance limmit"
-    expect { subject.top_up(1) }.to raise_error(error)
+    expect { subject.top_up(1) }.to raise_error(Oystercard::MAXIMUM_ERROR)
   end
 
   it 'responds to touch_in' do
@@ -51,7 +50,7 @@ describe Oystercard do
 
   it 'it raises an error if there is not enough money' do
     subject.top_up(Oystercard::MINIMUM_BALANCE - 0.01)
-    expect { subject.touch_in(station) }.to raise_error("You don't have enough money")
+    expect { subject.touch_in(station) }.to raise_error(Oystercard::MINIMUM_ERROR)
   end
 
   it 'touching out reduces balance by minimum fare' do

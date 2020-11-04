@@ -4,7 +4,8 @@ require './/lib/journey_log'
 class Oystercard
   MINIMUM_BALANCE = 1
   MAXIMUM_BALANCE = 90
-  BALANCE_ERROR = "#{MAXIMUM_BALANCE} is the balance limmit".freeze
+  MAXIMUM_ERROR = "#{MAXIMUM_BALANCE} is the balance limmit".freeze
+  MINIMUM_ERROR = "You can't afford the minimum fare: #{MINIMUM_BALANCE}".freeze
 
   attr_reader :balance, :journeys, :journey_log
 
@@ -14,7 +15,7 @@ class Oystercard
   end
 
   def top_up(value)
-    raise BALANCE_ERROR if @balance + value > MAXIMUM_BALANCE
+    raise MAXIMUM_ERROR if @balance + value > MAXIMUM_BALANCE
 
     @balance += value
   end
@@ -22,7 +23,7 @@ class Oystercard
   def touch_in(station)
     deduct(@journey_log.current_journey.fare) if @journey_log.current_journey
 
-    raise "You don't have enough money" if @balance < MINIMUM_BALANCE
+    raise MINIMUM_ERROR if @balance < MINIMUM_BALANCE
 
     @journey_log.start(station)
   end
