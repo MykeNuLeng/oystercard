@@ -1,7 +1,6 @@
 require 'oystercard'
 
 describe Oystercard do
-
   let(:station) { double :station }
 
   it 'can have a balance' do
@@ -18,8 +17,8 @@ describe Oystercard do
 
   it 'raises an error when balance goes above 90' do
     subject.top_up(90)
-    error_message = "You're clearly too rich! #{subject.MAXIMUM_BALANCE} is the limmit"
-    expect { subject.top_up(1) }.to raise_error(error_message)
+    error = "#{Oystercard::MAXIMUM_BALANCE} is the balance limmit"
+    expect { subject.top_up(1) }.to raise_error(error)
   end
 
   it 'responds to touch_in' do
@@ -33,7 +32,7 @@ describe Oystercard do
   it 'touching out removes entry_station' do
     subject.top_up(Oystercard::MINIMUM_BALANCE)
     subject.touch_in(station)
-    expect(subject.touch_out(station)).to eq nil
+    expect(subject.touch_out(station)).to eq 0
   end
 
   it 'responds to in_journey?' do
@@ -61,13 +60,12 @@ describe Oystercard do
     expect { subject.touch_out(station) }.to change { subject.balance }.by(-Oystercard::MINIMUM_BALANCE)
   end
 
-  it 'a complete journey is stored in @travel_history' do
+  it 'starting a journey is stored in journey log' do
     subject.top_up(Oystercard::MINIMUM_BALANCE)
-    subject.touch_in(station)
-    expect { subject.touch_out(station) }.to change { subject.travel_history.length }.by 1
+    expect { subject.touch_in(station) }.to change { subject.journey_log.journeys.length }.by 1
   end
 
-  it 'by default the travel history is empty' do
-    expect(subject.travel_history).to be_empty
+  it 'by default the journey log is empty' do
+    expect(subject.journey_log.journeys).to be_empty
   end
 end

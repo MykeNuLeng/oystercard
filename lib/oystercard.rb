@@ -1,55 +1,45 @@
-require './lib/journey.rb'
-require './lib/station.rb'
+require './lib/journey'
+require './lib/station'
+require './/lib/journey_log'
 class Oystercard
-
   MINIMUM_BALANCE = 1
+  MAXIMUM_BALANCE = 90
+  BALANCE_ERROR = "#{MAXIMUM_BALANCE} is the balance limmit".freeze
 
+  attr_reader :balance, :journeys, :journey_log
 
-  def initialize(default_balance = 0, max = 90)
+  def initialize(default_balance = 0)
     @balance = default_balance
-    @MAXIMUM_BALANCE = max
-    @travel_history = []
-    @journey
+    @journey_log = JourneyLog.new(journey_class: Journey)
   end
 
-  attr_reader :balance, :MAXIMUM_BALANCE, :travel_history
-
   def top_up(value)
-    error = "You're clearly too rich! #{@MAXIMUM_BALANCE} is the limmit"
-    raise error if @balance + value > @MAXIMUM_BALANCE
+    raise BALANCE_ERROR if @balance + value > MAXIMUM_BALANCE
 
     @balance += value
   end
 
   def touch_in(station)
-    end_journey if @journey
+    deduct(@journey_log.current_journey.fare) if @journey_log.current_journey
 
     raise "You don't have enough money" if @balance < MINIMUM_BALANCE
 
-    @journey = Journey.new(station)
+    @journey_log.start(station)
   end
 
   def touch_out(station)
-    @journey = Journey.new(nil) unless @journey
+    @journey_log.current_journey ? @journey_log.finish(station) : @journey_log.start(nil, station)
 
-    @journey.finish(station)
-    end_journey
+    deduct(@journey_log.final_journey.fare)
   end
 
   def in_journey?
-   @journey != nil
+    !!@journey_log.current_journey
   end
 
   private
 
-  def end_journey
-    deduct(@journey.fare)
-    @travel_history << @journey
-    @journey = nil
-  end
-
   def deduct(fare)
     @balance -= fare
   end
-
 end
