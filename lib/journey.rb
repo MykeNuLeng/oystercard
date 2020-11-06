@@ -12,7 +12,7 @@ class Journey
   def fare
     return PENALTY_FARE if penalty?
 
-    STANDARD_FARE
+    STANDARD_FARE + (@entry_station.zone - @exit_station.zone).abs
   end
 
   def finish(exit_station)
